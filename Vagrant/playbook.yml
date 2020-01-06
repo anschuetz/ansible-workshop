@@ -1,0 +1,16 @@
+---
+- hosts: all
+  name: Konfiguriere die neue VM mit Ansible
+  gather_facts: no
+  become: yes
+  remote_user: root
+  
+  pre_tasks:
+    - name: 'Python2 installieren, weil sonst gar nix geht...'
+      raw: sudo apt-get -y install python
+  tasks:
+    - name: SSH-Key vom RP-Laptop in /root/.ssh/authorized_keys eintragen
+      authorized_key:
+        key:  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCeSy9QkyHH5iSFNBzAAY7kSliBX1mEHNoj2Mv/b8ITFR+o0x+6J8AM5Ef6lUGsaSJk1lH11w8wnvMaJw7oINA5H0pp+ajMJqeyg4kslCHxPB0ysQOf/cd02z6cYquXraaEh7c/lYDhMHbVaNpTZSjCxf2/y7JHgMyAjSs/4wchSlMpcQp6YlCAraVYQV+wL/HoOYbVVIfyIrv8OEIqIUZqesyFSxgrYNxC0LPwt8vyu2DRRXDD6qo2nslNyKOGJdTf4zIR6qqylKV3o0Lwo33ggiqtaU8fmeTo1CA7PZkkyvc+TpHT8OySDLMolw2JOxdy89Iq6sVtXmxeOyHdImW/ az@az-ubuntu
+        user: root
+        state: present

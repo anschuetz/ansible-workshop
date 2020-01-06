@@ -1,0 +1,27 @@
+---
+- name: Sicherstellen, dass Gruppe sudo existiert
+  group:
+    name: sudo
+    state: present
+
+- name: lege User "{{ username }}""
+  user:    
+    name: "{{ username }}"
+    shell: /bin/bash
+    groups: sudo
+    append: yes
+
+- name: Die SSH-Keys von "{{ username }}" in seine authorized_keys eintragen
+  authorized_key:
+    user: "{{ username }}"
+    key: "{{ item }}"
+    state: present
+  with_items: "{{ admin_ssh_schluessel[username] }}"
+
+- name: Die SSH-Keys von "{{ username }}" in authorized_keys von root eintragen
+  authorized_key:
+    user: "root"
+    key: "{{ item }}"
+    state: present
+  with_items: "{{ admin_ssh_schluessel[username] }}"
+  

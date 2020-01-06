@@ -1,0 +1,5 @@
+--- 
+- name: Sicherstellen, dass hollywood nicht installiert ist
+  apt:
+    name: hollywood
+    state: absent

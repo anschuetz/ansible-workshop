@@ -1,0 +1,86 @@
+---
+# Beispiel 2 - Einfaches Playbook mit Variablen und Iterationen
+
+- hosts: 
+    - web1
+    - web2
+    - web3
+  name: Das ist das Playbook-Beispiel Nummer 2
+  gather_facts: no
+  vars:
+    ansible_user: root
+    pakete:
+      obligatorisch:
+        - vim 
+        - htop
+        - hollywood
+      unerwuenscht:
+        - ntop 
+        - wurstsalat
+    test_filename: /root/test.cfg
+    test_file_inhalt: Elsässer-Wurstsalat = mit Käse
+
+  tasks:
+    - name: Beispiel-Konfigurationsdatei erzeugen
+      copy:
+        content: "Wurstsalat = mit Käse"
+        force: no
+        dest: "{{ test_filename }}"
+        owner: www-data
+        group: www-data
+        mode: 0644
+      register: ausgabe_des_befehls
+    - debug:
+        msg: "{{ ausgabe_des_befehls }}"
+        verbosity: 1 
+    - name: Datei "{{ test_filename }}" mit gewünschtem Inhalt füllen
+      lineinfile: 
+        dest: "{{ test_filename }}"
+        regexp: "^{{ test_file_inhalt }}"
+        line: "{{ test_file_inhalt }}"
+        state: present
+
+    - name: ungewünschte Zeile in "{{ test_filename }}" auskommentieren
+      lineinfile: 
+        dest: "{{ test_filename }}"
+        regexp: "^Wurstsalat"
+        line: "Wurstsalat = ohne Käse"
+        state: present
+
+    - name: APT-Pakete aktualisieren (apt update && apt dist-upgrade)
+      apt: 
+        upgrade: dist
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Sicherstellen, dass alles aus obligatorische_pakete installiert ist 
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items: "{{ pakete.obligatorisch }}"
+
+    - name: Sicherstellen, dass ntop nicht installiert ist
+      apt:
+        name: "{{ item }}"
+        state: absent
+      with_items: "{{ pakete.unerwuenscht }}"
+
+    - name: Gruppe admins anlegen
+      group:
+        name: "{{ item }}"
+      with_items:
+        - admins
+        - docker 
+
+    - name: User 'admin', passwort 'geheim' mit standardshell bash und den Gruppen admins und docker
+      user:
+        name: admin
+        shell: /bin/bash
+        groups: admins,docker
+        append: yes
+    
+    - name: meinen SSH-Key in die ~admin/.ssh/authorized_keys eintragen
+      authorized_key:
+        key:  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCeSy9QkyHH5iSFNBzAAY7kSliBX1mEHNoj2Mv/b8ITFR+o0x+6J8AM5Ef6lUGsaSJk1lH11w8wnvMaJw7oINA5H0pp+ajMJqeyg4kslCHxPB0ysQOf/cd02z6cYquXraaEh7c/lYDhMHbVaNpTZSjCxf2/y7JHgMyAjSs/4wchSlMpcQp6YlCAraVYQV+wL/HoOYbVVIfyIrv8OEIqIUZqesyFSxgrYNxC0LPwt8vyu2DRRXDD6qo2nslNyKOGJdTf4zIR6qqylKV3o0Lwo33ggiqtaU8fmeTo1CA7PZkkyvc+TpHT8OySDLMolw2JOxdy89Iq6sVtXmxeOyHdImW/ az@az-ubuntu
+        user: admin
+        state: present

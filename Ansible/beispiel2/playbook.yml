@@ -1,0 +1,63 @@
+---
+# Beispiel 2 - Einfaches Playbook mit in "Roles" ausgelagerten "Tasks"
+
+- hosts: 
+    - web1
+    - web2
+    - web3
+  name: Das ist das Playbook-Beispiel Nummer 1
+  gather_facts: no
+  vars:
+    ansible_user: root
+    admin_ssh_schluessel:
+      foobar:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCeSy9QkyHH5iSFNBzAAY7kSliBX1mEHNoj2Mv/b8ITFR+o0x+6J8AM5Ef6lUGsaSJk1lH11w8wnvMaJw7oINA5H0pp+ajMJqeyg4kslCHxPB0ysQOf/cd02z6cYquXraaEh7c/lYDhMHbVaNpTZSjCxf2/y7JHgMyAjSs/4wchSlMpcQp6YlCAraVYQV+wL/HoOYbVVIfyIrv8OEIqIUZqesyFSxgrYNxC0LPwt8vyu2DRRXDD6qo2nslNyKOGJdTf4zIR6qqylKV3o0Lwo33ggiqtaU8fmeTo1CA7PZkkyvc+TpHT8OySDLMolw2JOxdy89Iq6sVtXmxeOyHdImW/ az@az-ubuntu
+        - ssh-rsa AAAATestKeyFunktioniertNichtIstAberEgalManErkenntIhnWunderbarWieder
+  roles:
+    - vim-install
+    - role: dist-upgrade
+      zeit: 86400
+    - hollywood-uninstall
+    - role: sudouser
+      username: foobar
+    
+
+
+  tasks:
+    
+
+
+
+
+
+
+#######################
+#######################
+
+    # - name: Beispiel-Konfigurationsdatei erzeugen
+    #   copy:
+    #     content: "Wurstsalat = mit Käse"
+    #     force: no
+    #     dest: "{{ test_filename }}"
+    #     owner: www-data
+    #     group: www-data
+    #     mode: 0644
+    #   register: ausgabe_des_befehls
+    # - debug:
+    #     msg: "{{ ausgabe_des_befehls }}"
+    #     verbosity: 1 
+    # - name: Datei "{{ test_filename }}" mit gewünschtem Inhalt füllen
+    #   lineinfile: 
+    #     dest: "{{ test_filename }}"
+    #     regexp: "^{{ test_file_inhalt }}"
+    #     line: "{{ test_file_inhalt }}"
+    #     state: present
+
+    # - name: ungewünschte Zeile in "{{ test_filename }}" auskommentieren
+    #   lineinfile: 
+    #     dest: "{{ test_filename }}"
+    #     regexp: "^Wurstsalat"
+    #     line: "Wurstsalat = ohne Käse"
+    #     state: present
+
+        
