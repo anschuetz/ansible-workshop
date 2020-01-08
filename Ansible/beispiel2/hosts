@@ -2,7 +2,7 @@
 localhost
 
 [web]
-web1 ansible_host=192.168.33.11
+web1 ansible_host=192.168.33.11 ansible_python_interpreter=/usr/bin/python3
 web2 ansible_host=192.168.33.12
 web3 ansible_host=192.168.33.13
-
+web4 ansible_host=192.168.33.14
